@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import { GetServerSidePropsResult } from "next";
+import { getCoinInfo, getCoinTicker } from "./api/api";
 
 const Title = styled.h1`
   font-size: 48px;
@@ -27,12 +29,19 @@ const Header = styled.header`
 interface Props {
   params: { id: string };
 }
-interface State {
-  name: string;
-}
 
 export default function Coin({ params }: Props) {
   const { id } = params || {};
+  const info = useQuery(["info", id], getCoinInfo, {
+    onSuccess: (data) => {
+      console.log("coin success", data);
+    },
+  });
+  const ticker = useQuery(["ticker", id], getCoinTicker, {
+    onSuccess: (data) => {
+      console.log("ticker success", data);
+    },
+  });
 
   return (
     <Container>

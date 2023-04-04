@@ -71,7 +71,7 @@ interface CoinInterface {
 
 export default function Home() {
   const { data: coins, isLoading } = useQuery(["coins"], getAllCoins);
-  console.log("data", coins);
+  // console.log("data", coins);
   return (
     <Container>
       <Header>

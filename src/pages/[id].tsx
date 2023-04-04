@@ -1,14 +1,36 @@
-import { useState } from "react";
 import {
   useQuery,
   QueryClient,
   dehydrate,
   DehydratedState,
-  QueryFunctionContext,
 } from "@tanstack/react-query";
 import styled from "styled-components";
 import { GetServerSidePropsResult } from "next";
 import { getCoinInfo, getCoinTicker } from "./api/api";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+
+const Overview = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+`;
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  span:first-child {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+`;
+const Description = styled.p`
+  margin: 20px 0px;
+`;
 
 const Title = styled.h1`
   font-size: 48px;
@@ -38,24 +60,92 @@ interface Params {
   };
 }
 
+const Chart = dynamic(() => import("../components/Chart"));
+const Price = dynamic(() => import("../components/Price"));
+
 export default function Coin({ params }: Params) {
   const { id } = params || {};
-  const info = useQuery(["info", id], getCoinInfo, {
-    onSuccess: (data) => {
-      console.log("coin success", data);
-    },
-  });
-  const ticker = useQuery(["ticker", id], getCoinTicker, {
-    onSuccess: (data) => {
-      console.log("ticker success", data);
-    },
-  });
+  const router = useRouter();
+  const { component } = router.query;
+
+  const { data: info, isLoading: infoLoading } = useQuery(
+    ["info", id],
+    getCoinInfo,
+    {
+      onSuccess: (data) => {
+        console.log("coin success", data);
+      },
+    }
+  );
+  const { data: priceInfo, isLoading: priceLoading } = useQuery(
+    ["ticker", id],
+    getCoinTicker,
+    {
+      onSuccess: (data) => {
+        console.log("ticker success", data);
+      },
+    }
+  );
+  const { e: page, id: _ } = router.query;
+
+  const renderComponent = () => {
+    switch (page) {
+      case "Chart":
+        return <Chart />;
+      case "Price":
+        return <Price />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <Container>
       <Header>
-        <Title>{id || "Loading..."}</Title>
+        <Title>{infoLoading ? "Loading..." : info?.name}</Title>
       </Header>
+      {infoLoading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <>
+          <Overview>
+            <OverviewItem>
+              <span>Rank:</span>
+              <span>{info?.rank}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Symbol:</span>
+              <span>${info?.symbol}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Open Source:</span>
+              <span>{info?.open_source ? "Yes" : "No"}</span>
+            </OverviewItem>
+          </Overview>
+          <Description>{info?.description}</Description>
+          <Overview>
+            <OverviewItem>
+              <span>Total Suply:</span>
+              <span>{priceInfo?.total_supply}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Max Supply:</span>
+              <span>{priceInfo?.max_supply}</span>
+            </OverviewItem>
+          </Overview>
+        </>
+      )}
+      <nav>
+        <ul>
+          <li>
+            <a href={`/${id}?e=Price`}>Price</a>
+          </li>
+          <li>
+            <a href={`/${id}?e=Chart`}>Chart</a>
+          </li>
+        </ul>
+      </nav>
+      {renderComponent()}
     </Container>
   );
 }

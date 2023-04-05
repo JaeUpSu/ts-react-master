@@ -10,3 +10,7 @@ declare module "styled-components" {
     accentColor: string;
   }
 }
+
+export interface StylesProps {
+  slot?: string;
+}

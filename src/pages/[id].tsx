@@ -4,55 +4,20 @@ import {
   dehydrate,
   DehydratedState,
 } from "@tanstack/react-query";
-import styled from "styled-components";
 import { GetServerSidePropsResult } from "next";
 import { getCoinInfo, getCoinTicker } from "./api/api";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 
-const Overview = styled.div`
-  display: flex;
-  justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 10px 20px;
-  border-radius: 10px;
-`;
-const OverviewItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  span:first-child {
-    font-size: 10px;
-    font-weight: 400;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-`;
-const Description = styled.p`
-  margin: 20px 0px;
-`;
-
-const Title = styled.h1`
-  font-size: 48px;
-  color: ${(props) => props.theme.accentColor};
-`;
-
-const Loader = styled.span`
-  text-align: center;
-  display: block;
-`;
-const Container = styled.span`
-  padding: 0px 20px;
-  max-width: 480px;
-  margin: 0 auto;
-`;
-
-const Header = styled.header`
-  height: 15vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+import Overview from "@/components/Overview";
+import OverviewItem from "@/components/OverviewItem";
+import Description from "@/components/Description";
+import Container from "@/components/Container";
+import Loader from "@/components/Loader";
+import Header from "@/components/Header";
+import Title from "@/components/Title";
+import Tab from "@/components/Tab";
+import Tabs from "@/components/Tabs";
 
 interface Params {
   params: {
@@ -66,7 +31,7 @@ const Price = dynamic(() => import("../components/Price"));
 export default function Coin({ params }: Params) {
   const { id } = params || {};
   const router = useRouter();
-  const { component } = router.query;
+  const { e: component, id: _ } = router.query;
 
   const { data: info, isLoading: infoLoading } = useQuery(
     ["info", id],
@@ -77,6 +42,7 @@ export default function Coin({ params }: Params) {
       },
     }
   );
+
   const { data: priceInfo, isLoading: priceLoading } = useQuery(
     ["ticker", id],
     getCoinTicker,
@@ -86,10 +52,9 @@ export default function Coin({ params }: Params) {
       },
     }
   );
-  const { e: page, id: _ } = router.query;
 
   const renderComponent = () => {
-    switch (page) {
+    switch (component) {
       case "Chart":
         return <Chart />;
       case "Price":
@@ -100,35 +65,37 @@ export default function Coin({ params }: Params) {
   };
 
   return (
-    <Container>
-      <Header>
-        <Title>{infoLoading ? "Loading..." : info?.name}</Title>
+    <Container slot="coin-containers">
+      <Header slot="coin-header">
+        <Title slot="coin-title">
+          {infoLoading ? "Loading..." : info?.name}
+        </Title>
       </Header>
       {infoLoading ? (
-        <Loader>Loading...</Loader>
+        <Loader slot="coin-loader">Loading...</Loader>
       ) : (
         <>
-          <Overview>
-            <OverviewItem>
+          <Overview slot="overview-1st-contents">
+            <OverviewItem slot="overview-1st-item">
               <span>Rank:</span>
               <span>{info?.rank}</span>
             </OverviewItem>
-            <OverviewItem>
+            <OverviewItem slot="overview-2nd-item">
               <span>Symbol:</span>
               <span>${info?.symbol}</span>
             </OverviewItem>
-            <OverviewItem>
+            <OverviewItem slot="overview-3rd-item">
               <span>Open Source:</span>
               <span>{info?.open_source ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
-          <Overview>
-            <OverviewItem>
+          <Description slot="coin-description">{info?.description}</Description>
+          <Overview slot="overview-2nd-contents">
+            <OverviewItem slot="overview-2nd-1st-item">
               <span>Total Suply:</span>
               <span>{priceInfo?.total_supply}</span>
-            </OverviewItem>
-            <OverviewItem>
+            </OverviewItem>{" "}
+            <OverviewItem slot="overview-2nd-2nd-item">
               <span>Max Supply:</span>
               <span>{priceInfo?.max_supply}</span>
             </OverviewItem>
@@ -136,14 +103,14 @@ export default function Coin({ params }: Params) {
         </>
       )}
       <nav>
-        <ul>
-          <li>
+        <Tabs slot="coin-tabs">
+          <Tab isActive={component !== "Price"} slot="coin-1st-tab">
             <a href={`/${id}?e=Price`}>Price</a>
-          </li>
-          <li>
+          </Tab>
+          <Tab isActive={component !== "Chart"} slot="coin-2nd-tab">
             <a href={`/${id}?e=Chart`}>Chart</a>
-          </li>
-        </ul>
+          </Tab>
+        </Tabs>
       </nav>
       {renderComponent()}
     </Container>

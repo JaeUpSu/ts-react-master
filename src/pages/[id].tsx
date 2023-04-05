@@ -16,8 +16,8 @@ import Container from "@/components/Container";
 import Loader from "@/components/Loader";
 import Header from "@/components/Header";
 import Title from "@/components/Title";
-import Tab from "@/components/Tab";
 import Tabs from "@/components/Tabs";
+import Tab from "@/components/Tab";
 
 interface Params {
   params: {

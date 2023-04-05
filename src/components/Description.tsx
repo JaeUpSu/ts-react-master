@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const Description = styled.p.attrs((props) => ({
   className: `coin-${props.slot}`,

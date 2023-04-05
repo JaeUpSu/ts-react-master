@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const OverviewItem = styled.div.attrs((props) => ({
   className: `OverviewItem-${props.slot}`,
@@ -6,6 +6,7 @@ const OverviewItem = styled.div.attrs((props) => ({
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 33%;
   span:first-child {
     font-size: 10px;
     font-weight: 400;

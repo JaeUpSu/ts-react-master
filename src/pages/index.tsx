@@ -1,12 +1,12 @@
-import { GetServerSidePropsResult } from "next";
-import Link from "next/link";
-import styled from "styled-components";
 import {
   useQuery,
   dehydrate,
   DehydratedState,
   QueryClient,
 } from "@tanstack/react-query";
+import Link from "next/link";
+import { GetServerSidePropsResult } from "next";
+import styled from "styled-components";
 import { getAllCoins } from "./api/api";
 
 const Container = styled.div`
@@ -59,7 +59,7 @@ const Img = styled.img`
   margin-right: 10px;
 `;
 
-interface CoinInterface {
+interface ICoin {
   id: string;
   name: string;
   symbol: string;
@@ -71,7 +71,6 @@ interface CoinInterface {
 
 export default function Home() {
   const { data: coins, isLoading } = useQuery(["coins"], getAllCoins);
-  // console.log("data", coins);
   return (
     <Container>
       <Header>
@@ -79,7 +78,7 @@ export default function Home() {
       </Header>
       <CoinList>
         {!isLoading &&
-          coins?.map((coin: CoinInterface) => (
+          coins?.map((coin: ICoin) => (
             <Coin key={coin.id}>
               <Link href={`/${coin.id}`}>{coin.name} &rarr;</Link>
             </Coin>
@@ -90,7 +89,7 @@ export default function Home() {
 }
 interface Props {
   dehydratedState: DehydratedState | null;
-  data: CoinInterface[] | null | undefined;
+  data: ICoin[] | null | undefined;
 }
 
 export async function getServerSideProps(): Promise<

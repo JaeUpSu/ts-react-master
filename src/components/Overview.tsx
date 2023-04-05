@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { StylesProps } from "@/styles/styled";
 
 const Overview = styled.div.attrs((props) => ({

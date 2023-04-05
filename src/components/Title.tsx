@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const Title = styled.h1.attrs((props) => ({
   className: `coin-${props.slot}`,

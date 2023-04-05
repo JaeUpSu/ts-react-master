@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const Tabs = styled.ul.attrs((props) => ({
   className: `coin-${props.slot}`,

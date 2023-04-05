@@ -1,3 +1,9 @@
-export default function Price() {
-  return <>Price - Components</>;
+interface PriceProps {
+  coinId: string;
 }
+
+const Price: React.FC<PriceProps> = ({ coinId }) => {
+  return <>Price - Components</>;
+};
+
+export default Price;

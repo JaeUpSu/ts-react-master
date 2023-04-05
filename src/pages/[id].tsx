@@ -33,7 +33,7 @@ export default function Coin({ params }: Params) {
   const router = useRouter();
   const { e: component, id: _ } = router.query;
 
-  const { data: info, isLoading: infoLoading } = useQuery(
+  const { data: infoData, isLoading: infoLoading } = useQuery(
     ["info", id],
     getCoinInfo,
     {
@@ -43,7 +43,7 @@ export default function Coin({ params }: Params) {
     }
   );
 
-  const { data: priceInfo, isLoading: priceLoading } = useQuery(
+  const { data: priceInfoData, isLoading: priceLoading } = useQuery(
     ["ticker", id],
     getCoinTicker,
     {
@@ -56,9 +56,9 @@ export default function Coin({ params }: Params) {
   const renderComponent = () => {
     switch (component) {
       case "Chart":
-        return <Chart />;
+        return <Chart coinId={id} />;
       case "Price":
-        return <Price />;
+        return <Price coinId={id} />;
       default:
         return null;
     }
@@ -68,7 +68,7 @@ export default function Coin({ params }: Params) {
     <Container slot="coin-containers">
       <Header slot="coin-header">
         <Title slot="coin-title">
-          {infoLoading ? "Loading..." : info?.name}
+          {infoLoading ? "Loading..." : infoData?.name}
         </Title>
       </Header>
       {infoLoading ? (
@@ -78,26 +78,28 @@ export default function Coin({ params }: Params) {
           <Overview slot="overview-1st-contents">
             <OverviewItem slot="overview-1st-item">
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infoData?.rank}</span>
             </OverviewItem>
             <OverviewItem slot="overview-2nd-item">
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem slot="overview-3rd-item">
               <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>{infoData?.open_source ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
-          <Description slot="coin-description">{info?.description}</Description>
+          <Description slot="coin-description">
+            {infoData?.description}
+          </Description>
           <Overview slot="overview-2nd-contents">
             <OverviewItem slot="overview-2nd-1st-item">
               <span>Total Suply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{priceInfoData?.total_supply}</span>
             </OverviewItem>{" "}
             <OverviewItem slot="overview-2nd-2nd-item">
               <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{priceInfoData?.max_supply}</span>
             </OverviewItem>
           </Overview>
         </>

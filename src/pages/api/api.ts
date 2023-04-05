@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { QueryFunctionContext } from "@tanstack/react-query";
 
 const instance = axios.create({
@@ -19,5 +19,14 @@ export const getCoinTicker = ({ queryKey }: QueryFunctionContext) => {
   const [_, id] = queryKey;
   if (id) {
     return instance.get(`tickers/${id}`).then((res) => res.data);
+  }
+};
+
+export const getCoinHistory = ({ queryKey }: QueryFunctionContext) => {
+  const [_, coinId] = queryKey;
+  if (coinId) {
+    return instance
+      .get(`https://ohlcv-api.nomadcoders.workers.dev/?coinId=${coinId}`)
+      .then((res) => res.data);
   }
 };

@@ -1,121 +1,25 @@
-import {
-  useQuery,
-  dehydrate,
-  DehydratedState,
-  QueryClient,
-} from "@tanstack/react-query";
-import Link from "next/link";
-import { GetServerSidePropsResult } from "next";
-import styled from "styled-components";
-import { getAllCoins } from "./api/api";
+import { useState } from "react";
 import Seo from "@/components/seo";
 
-const Container = styled.div`
-  padding: 0px 20px;
-  max-width: 480px;
-  margin: 0 auto;
-`;
-
-const Header = styled.header`
-  height: 15vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const CoinList = styled.ul``;
-
-const Coin = styled.li`
-  background-color: ${(props) => props.theme.cardBgColor};
-  color: ${(props) => props.theme.textColor};
-  border-radius: 15px;
-  margin-bottom: 10px;
-  border: 1px solid white;
-  a {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    transition: color 0.2s ease-in;
-    display: block;
-  }
-  &:hover {
-    a {
-      color: ${(props) => props.theme.accentColor};
-    }
-  }
-`;
-
-const Title = styled.h1`
-  font-size: 48px;
-  color: ${(props) => props.theme.accentColor};
-`;
-
-const Loader = styled.span`
-  text-align: center;
-  display: block;
-`;
-
-const Img = styled.img`
-  width: 35px;
-  height: 35px;
-  margin-right: 10px;
-`;
-
-interface ICoin {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  is_new: boolean;
-  is_active: boolean;
-  type: string;
-}
-
 export default function Home() {
-  const { data: coins, isLoading } = useQuery(["coins"], getAllCoins);
+  const [toDo, setToDo] = useState("");
+  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const {
+      currentTarget: { value },
+    } = event;
+    setToDo(value);
+  };
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(toDo);
+  };
   return (
-    <Container>
+    <div>
       <Seo title="Home" />
-      <Header>
-        <Title>코인</Title>
-      </Header>
-      <CoinList>
-        {!isLoading &&
-          coins?.map((coin: ICoin) => (
-            <Coin key={coin.id}>
-              <Link href={`/${coin.id}`}>{coin.name} &rarr;</Link>
-            </Coin>
-          ))}
-      </CoinList>
-    </Container>
+      <form onSubmit={onSubmit}>
+        <input onChange={onChange} value={toDo} placeholder="Write a to do" />
+        <button>Add</button>
+      </form>
+    </div>
   );
-}
-interface Props {
-  dehydratedState: DehydratedState | null;
-  data: ICoin[] | null | undefined;
-}
-
-export async function getServerSideProps(): Promise<
-  GetServerSidePropsResult<Props>
-> {
-  try {
-    const queryClient = new QueryClient();
-    await queryClient.prefetchQuery(["coins"], getAllCoins);
-
-    return {
-      props: {
-        dehydratedState: dehydrate(queryClient),
-        data: queryClient.getQueryData(["coins"]),
-      },
-    };
-  } catch (e) {
-    console.log("Error in coins ssr func", e);
-
-    return {
-      props: {
-        dehydratedState: null,
-        data: null,
-      },
-    };
-  }
 }

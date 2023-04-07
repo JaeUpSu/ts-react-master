@@ -7,7 +7,7 @@ interface SeoType {
 export default function Seo({ title }: SeoType) {
   return (
     <Head>
-      <title>{title} | Next Movies</title>
+      <title>{title} | Next ToDoList</title>
     </Head>
   );
 }

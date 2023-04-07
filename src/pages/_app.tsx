@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { AppProps } from "next/app";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RecoilRoot } from "recoil";

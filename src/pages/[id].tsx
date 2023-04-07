@@ -4,20 +4,29 @@ import {
   dehydrate,
   DehydratedState,
 } from "@tanstack/react-query";
-import { GetServerSidePropsResult } from "next";
-import { getCoinInfo, getCoinTicker } from "./api/api";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { GetServerSidePropsResult } from "next";
+
+import styled from "styled-components";
+
+import { getCoinInfo, getCoinTicker } from "./api/api";
 
 import Overview from "@/components/Overview";
 import OverviewItem from "@/components/OverviewItem";
 import Description from "@/components/Description";
-import Container from "@/components/Container";
 import Loader from "@/components/Loader";
 import Header from "@/components/Header";
 import Title from "@/components/Title";
 import Tabs from "@/components/Tabs";
 import Tab from "@/components/Tab";
+import Seo from "@/components/seo";
+
+const Container = styled.div`
+  padding: 0px 20px;
+  max-width: 480px;
+  margin: 0 auto;
+`;
 
 interface Params {
   params: {
@@ -47,9 +56,7 @@ export default function Coin({ params }: Params) {
     ["ticker", id],
     getCoinTicker,
     {
-      onSuccess: (data) => {
-        console.log("ticker success", data);
-      },
+      refetchInterval: 5000,
     }
   );
 
@@ -66,6 +73,7 @@ export default function Coin({ params }: Params) {
 
   return (
     <Container slot="coin-containers">
+      <Seo title="코인" />
       <Header slot="coin-header">
         <Title slot="coin-title">
           {infoLoading ? "Loading..." : infoData?.name}
@@ -85,8 +93,8 @@ export default function Coin({ params }: Params) {
               <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem slot="overview-3rd-item">
-              <span>Open Source:</span>
-              <span>{infoData?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>${priceInfoData?.quotes?.USD?.price?.toFixed(3)}</span>{" "}
             </OverviewItem>
           </Overview>
           <Description slot="coin-description">

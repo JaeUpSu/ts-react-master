@@ -1,19 +1,22 @@
-import "@/styles/globals.css";
+import { useState } from "react";
 import type { AppProps } from "next/app";
-import { ThemeProvider } from "styled-components";
-import { theme } from "@/styles/theme";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { RecoilRoot } from "recoil";
+import { ThemeProvider } from "@/components/ThemeProvider";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const client = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <QueryClientProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-        <ReactQueryDevtools initialIsOpen={true} />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <RecoilRoot>
+      <QueryClientProvider client={client}>
+        <ThemeProvider>
+          <Component {...pageProps} />
+          <ReactQueryDevtools initialIsOpen={true} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </RecoilRoot>
   );
 }

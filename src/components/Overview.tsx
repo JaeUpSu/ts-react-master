@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { StylesProps } from "@/styles/styled";
 
 const Overview = styled.div.attrs((props) => ({
   className: `overview-${props.slot}`,

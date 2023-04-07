@@ -8,6 +8,7 @@ import Link from "next/link";
 import { GetServerSidePropsResult } from "next";
 import styled from "styled-components";
 import { getAllCoins } from "./api/api";
+import Seo from "@/components/seo";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -25,10 +26,11 @@ const Header = styled.header`
 const CoinList = styled.ul``;
 
 const Coin = styled.li`
-  background-color: white;
-  color: ${(props) => props.theme.bgColor};
+  background-color: ${(props) => props.theme.cardBgColor};
+  color: ${(props) => props.theme.textColor};
   border-radius: 15px;
   margin-bottom: 10px;
+  border: 1px solid white;
   a {
     display: flex;
     align-items: center;
@@ -73,6 +75,7 @@ export default function Home() {
   const { data: coins, isLoading } = useQuery(["coins"], getAllCoins);
   return (
     <Container>
+      <Seo title="Home" />
       <Header>
         <Title>코인</Title>
       </Header>

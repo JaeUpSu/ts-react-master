@@ -7,6 +7,7 @@ const OverviewItem = styled.div.attrs((props) => ({
   flex-direction: column;
   align-items: center;
   width: 33%;
+  color:${(props) => props.theme.textColor}
   span:first-child {
     font-size: 10px;
     font-weight: 400;

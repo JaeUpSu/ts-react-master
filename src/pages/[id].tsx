@@ -16,7 +16,7 @@ import Overview from "@/components/Overview";
 import OverviewItem from "@/components/OverviewItem";
 import Description from "@/components/Description";
 import Loader from "@/components/Loader";
-import Header from "@/components/Header";
+import Header from "@/components/Coin/Header";
 import Title from "@/components/Title";
 import Tabs from "@/components/Tabs";
 import Tab from "@/components/Tab";
@@ -34,8 +34,8 @@ interface Params {
   };
 }
 
-const Chart = dynamic(() => import("../components/Chart"));
-const Price = dynamic(() => import("../components/Price"));
+const Chart = dynamic(() => import("../components/Coin/Chart"));
+const Price = dynamic(() => import("../components/Coin/Price"));
 
 export default function Coin({ params }: Params) {
   const { id } = params || {};

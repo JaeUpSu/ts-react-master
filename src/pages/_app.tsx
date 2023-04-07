@@ -4,7 +4,15 @@ import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createGlobalStyle } from "styled-components";
 
+const GlobalStyle = createGlobalStyle`
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color:${(props) => props.theme.bgColor};
+  color:${(props) => props.theme.textColor}
+}
+`;
 const client = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -12,6 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <RecoilRoot>
       <QueryClientProvider client={client}>
         <ThemeProvider>
+          <GlobalStyle />
           <Component {...pageProps} />
           <ReactQueryDevtools initialIsOpen={true} />
         </ThemeProvider>

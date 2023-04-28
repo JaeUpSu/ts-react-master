@@ -1,21 +1,30 @@
-import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { ThemeProvider } from "styled-components";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { RecoilRoot } from "recoil";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
-const darkTheme = {
-  textColor: "whitesmoke",
-  backgroundColor: "#111",
-};
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createGlobalStyle } from "styled-components";
 
-const lightTheme = {
-  textColor: "#1110",
-  backgroundColor: "whitesmoke",
-};
+const GlobalStyle = createGlobalStyle`
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color:${(props) => props.theme.bgColor};
+  color:${(props) => props.theme.textColor}
+}
+`;
+const client = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider theme={darkTheme}>
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <RecoilRoot>
+      <QueryClientProvider client={client}>
+        <ThemeProvider>
+          <GlobalStyle />
+          <Component {...pageProps} />
+          <ReactQueryDevtools initialIsOpen={true} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </RecoilRoot>
   );
 }
